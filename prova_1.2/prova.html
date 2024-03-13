@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prova Online</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        #enterFullscreen {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        #timer {
+            font-size: 24px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body oncopy="return false;">
+
+    <h1>Prova Online</h1>
+
+    <!-- Botão para iniciar a prova em tela cheia -->
+    <button id="enterFullscreen">Iniciar Prova</button>
+
+    <!-- Timer da prova -->
+    <div id="timer"></div>
+
+
+<h1>QUestão 1</h1>
+<p>A)</p>
+<p>B)</p>
+<p>C)</p>
+<p>D)</p>
+<p>E)</p>
+<input type="text" name="" id="">
+
+
+
+<script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Botão para entrar em tela cheia
+            var enterFullscreenButton = document.getElementById('enterFullscreen');
+
+            enterFullscreenButton.addEventListener('click', function() {
+                var element = document.documentElement; // Elemento raiz (HTML) da página
+                // window.location.href = 'pagina_da_prova.html';
+
+                // Verifica se o navegador suporta a API de tela cheia
+                if (element.requestFullscreen) {
+                    element.requestFullscreen(); // Solicita o modo de tela cheia
+
+                    // Adiciona um ouvinte de evento para verificar se o usuário tenta sair do modo de tela cheia
+                    document.addEventListener('fullscreenchange', function(event) {
+                        if (!document.fullscreenElement) {
+                            // Se o usuário tentar sair do modo de tela cheia, volta automaticamente para o modo de tela cheia
+                            element.requestFullscreen();
+                        }
+                    });
+                } else {
+                    console.error('Seu navegador não suporta o modo de tela inteira.');
+                }
+            });
+
+            // Timer de 3 horas
+            var startTime; // Variável para armazenar o tempo inicial
+            var timerInterval; // Variável para armazenar o intervalo do temporizador
+
+            function startTimer(duration, display) {
+                startTime = Date.now(); // Armazena o tempo inicial
+                var hours, minutes, seconds;
+
+                timerInterval = setInterval(function () {
+                    var elapsedTime = Date.now() - startTime; // Calcula o tempo decorrido desde o início
+                    var remainingTime = duration - elapsedTime / 1000; // Calcula o tempo restante em segundos
+
+                    if (remainingTime <= 0) {
+                        clearInterval(timerInterval); // Para o temporizador quando o tempo acabar
+                        display.textContent = "00:00:00"; // Define o texto para 00:00:00 quando o tempo acabar
+                    } else {
+                        hours = parseInt(remainingTime / 3600, 10);
+                        minutes = parseInt((remainingTime % 3600) / 60, 10);
+                        seconds = parseInt(remainingTime % 60, 10);
+
+                        hours = hours < 10 ? "0" + hours : hours;
+                        minutes = minutes < 10 ? "0" + minutes : minutes;
+                        seconds = seconds < 10 ? "0" + seconds : seconds;
+
+                        display.textContent = hours + ":" + minutes + ":" + seconds;
+                    }
+                }, 1000); // 1000 milissegundos = 1 segundo
+            }
+
+            // Inicia o timer quando a página é carregada
+            var duration = 3 * 60 * 60; // 3 horas em segundos
+            var display = document.querySelector('#timer'); // Seleciona o elemento do timer
+            startTimer(duration, display);
+
+            // Impedir o uso das teclas Esc, Alt + Tab e F11 em tela cheia
+            document.addEventListener('keydown', function(event) {
+                if (document.fullscreenElement) {
+                    if (event.key === 'Escape' || (event.altKey && event.key === 'Tab') || (event.key === 'F11')) {
+                        event.preventDefault();
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
